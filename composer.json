@@ -1,0 +1,24 @@
+{
+  "name": "sam-it/federated-login",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Sam",
+      "email": "sam@mousa.nl"
+    }
+  ],
+  "require": {
+    "lcobucci/jwt": "^3.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "WHO\\LimeSurvey\\FederatedLogin\\": ["src/"]
+    }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ]
+}
