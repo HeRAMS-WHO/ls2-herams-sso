@@ -28,7 +28,12 @@ class FederatedLogin extends \ls\pluginmanager\PluginBase
             'label' => 'Url for SSO',
             'help' => 'Used for button on login page',
         ],
-        
+        'loginUrl' => [
+            'type' => 'info',
+            'content' => 'abc',
+            'label' => 'Login URL for the SSO server',
+//            'help' => 'This URL should be the target of a POST request with a JWT token'
+        ]
 
     ];
 
@@ -42,9 +47,16 @@ class FederatedLogin extends \ls\pluginmanager\PluginBase
         parent::subscribe($event, 'router');
     }
 
-
+    public function getLoginUrl(): string
+    {
+        return $this->api->createUrl('plugins/unsecure', [
+            'plugin' => 'FederatedLogin',
+            'function' => 'SSO'
+        ]);
+    }
     public function init()
     {
+        $this->settings['loginUrl']['content'] = $this->getLoginUrl();
         /**
          * Here you should handle subscribing to the events your plugin will handle
          */
@@ -53,6 +65,10 @@ class FederatedLogin extends \ls\pluginmanager\PluginBase
         $this->subscribe('newLoginForm');
 //        $this->subscribe('afterLoginFormSubmit');
         $this->subscribe('newUserSession');
+
+        // Note that unsecure refers to the fact that there is not CSRF validation.
+        // For SSO this is actually not a problem but a requirement.
+        $this->subscribe('newUnsecureRequest');
 //        $this->subscribe('beforeDeactivate');
         // Now register for the core exports
 //        $this->subscribe('listExportPlugins');

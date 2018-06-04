@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "5d756fd0e5b61bf833cb0f4fa27f8fc4",
+    "content-hash": "b302a8b5fd14760a4d7764df34561849",
     "packages": [
         {
             "name": "lcobucci/jwt",

@@ -15,8 +15,6 @@ class NewUserSession extends EventHandler
 
     public function run(PluginEvent $event)
     {
-
-        
         // Do nothing if this user is not Authdb type
         /** @var \LSUserIdentity $identity */
         $identity = $event->get('identity');
@@ -35,6 +33,14 @@ class NewUserSession extends EventHandler
             throw new \Exception('Signature verification failed');
         }
 
+
+        $validationData = new ValidationData();
+        $validationData->setAudience($this->plugin->getLoginUrl());
+
+        if (!$token->validate($validationData)) {
+            throw new \Exception('Token is invalid, possibly expired');
+        }
+
         if (!$token->hasClaim('username')) {
             throw new \Exception('Token is valid but does not contain a username claim');
         }
@@ -47,10 +53,6 @@ class NewUserSession extends EventHandler
         if (!isset($user)) {
             $event->set('result', new \LSAuthResult(AuthPluginBase::ERROR_USERNAME_INVALID));
             return;
-        }
-
-        if (!$token->validate(new ValidationData())) {
-
         }
 
         $identity->id = $user->uid;

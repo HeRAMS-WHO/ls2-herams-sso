@@ -19,7 +19,7 @@ abstract class EventHandler
     /**
      * @var FederatedLogin
      */
-    private $plugin;
+    protected $plugin;
 
     /** @var PluginEventContent */
     private $content;
@@ -48,6 +48,7 @@ abstract class EventHandler
     {
         return $this->plugin->getStore()->get($this->plugin, $name, null, null, $default);
     }
+    
     protected function appendContent(string $content)
     {
         $this->content->addContent($content);
