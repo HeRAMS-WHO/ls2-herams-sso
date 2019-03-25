@@ -56,7 +56,7 @@ class NewUnsecureRequest extends EventHandler
             }
 
             $currentUser = $this->api->getCurrentUser();
-            if (!empty($currentUser) && $currentUser->id != $user->id) {
+            if (!empty($currentUser) && $currentUser->uid != $user->uid) {
                 throw new \CHttpException(412, 'Another user is already logged in');
             } elseif (!empty($currentUser)) {
                 // Already logged in as the same user from the JWT.
