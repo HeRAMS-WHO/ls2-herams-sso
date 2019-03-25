@@ -27,12 +27,7 @@ class NewUnsecureRequest extends EventHandler
 
         $jwt = $this->api->getRequest()->getPost('jwt');
 
-        if ($this->api->getCurrentUser() !== false || empty($jwt)) {
-            echo 'User already logged in';
-            return;
-        }
-
-        // Attempt login with JWT.
+        // Parse and verify the JWT
         $parser = new Parser();
         $token = $parser->parse($jwt);
 
@@ -56,15 +51,22 @@ class NewUnsecureRequest extends EventHandler
 
 
             $user = $this->api->getUserByName($token->getClaim('username'));
-
             if (!isset($user)) {
                 throw new \CHttpException(400, 'Unknown user');
             }
+
+            $currentUser = $this->api->getCurrentUser();
+            if (!empty($currentUser) && $currentUser->id != $user->id) {
+                throw new \CHttpException(412, 'Another user is already logged in');
+            } elseif (!empty($currentUser)) {
+                // Already logged in as the same user from the JWT.
+                $this->api->getRequest()->redirect($this->api->createUrl('admin/', []));
+            }
+
         } catch (\CHttpException $e) {
             if ($token->hasClaim('errorUrl')) {
                 $base = $token->getClaim('errorUrl');
                 $connector = empty(parse_url($base, PHP_URL_QUERY)) ? '?' : '&';
-
                 $url = $base . $connector . http_build_query(['error' => $e->getMessage()]);
                 $this->api->getRequest()->redirect($url);
             } else {
